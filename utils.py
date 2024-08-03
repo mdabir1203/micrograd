@@ -2,10 +2,13 @@
 
 # class that mimics the random interface in Python, fully deterministic,
 # and in a way that we also control fully, and can also use in C, etc.
+
+# initializes the state with provided seed
 class RNG:
     def __init__(self, seed):
-        self.state = seed
+        self.state = seed # sets initial state of RNG to seed value
 
+# generating 32-bit random unsigned integers
     def random_u32(self):
         # xorshift rng: https://en.wikipedia.org/wiki/Xorshift#xorshift.2A
         # doing & 0xFFFFFFFFFFFFFFFF is the same as cast to uint64 in C
@@ -15,9 +18,10 @@ class RNG:
         self.state ^= (self.state >> 27) & 0xFFFFFFFFFFFFFFFF
         return ((self.state * 0x2545F4914F6CDD1D) >> 32) & 0xFFFFFFFF
 
+# generate random float in range [0, 1)
     def random(self):
         # random float32 in [0, 1)
-        return (self.random_u32() >> 8) / 16777216.0
+        return (self.random_u32() >> 8) / 16777216.0 #divides by 2^24
 
     def uniform(self, a=0.0, b=1.0):
         # random float32 in [a, b)
